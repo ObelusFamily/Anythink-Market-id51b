@@ -109,9 +109,15 @@ class ItemsRepository(BaseRepository):  # noqa: WPS214
         limit: int = 20,
         offset: int = 0,
         requested_user: Optional[User] = None,
+        title: Optional[str] = None
     ) -> List[Item]:
         query_params: List[Union[str, int]] = []
         query_params_count = 0
+
+        if title:
+            title = "%"+title+"%"
+        else:
+            title = "%"
 
         # fmt: off
         query = Query.from_(
@@ -134,6 +140,8 @@ class ItemsRepository(BaseRepository):  # noqa: WPS214
             ).as_(
                 SELLER_USERNAME_ALIAS,
             ),
+        ).where(
+            items.title.like(title)
         )
         # fmt: on
 
